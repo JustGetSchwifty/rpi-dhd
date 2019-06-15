@@ -1,0 +1,276 @@
+@import "variables";
+@import "mixins";
+
+body {
+  background: black;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 1.0;
+  background: transparent;
+  border: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  font-size: 12px;
+  user-select: none;
+  cursor: none;
+}
+
+.adminState {
+  position: absolute;
+  z-index: 1500;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  background: #790000;
+  color: white;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+}
+
+.main, .cover {
+  position: absolute;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  .dialer {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 200;
+    background: black;
+    display: flex;
+    border: 5px solid $color-primary;
+
+    .glyphs, .glyphs .dynamic, .glyphs .fixed {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 8px;
+      position: relative;
+
+      &.dynamic, &.fixed {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      &.dynamic {
+        z-index: 400;
+      }
+
+      &.fixed {
+        z-index: 300;
+
+        .glyph {
+          color: transparent;
+        }
+      }
+
+      .dynamic {
+        .glyph {
+          &.activated .inside {
+            position: absolute;
+            top: calc( 50% - ( 100% / 6 - 16px ) / 2 );
+            left: calc( 50% - ( 100% / 7 - 12px ) / 2 );
+            opacity: 0;
+            z-index: 800;
+            pointer-events: none;
+          }
+        }
+      }
+
+      .fixed {
+        .glyph {
+          &.activated .inside {
+            color: $color-highlight;
+            pointer-events: none;
+          }
+        }
+      }
+
+      .glyph {
+        margin: 6px;
+        color: $color-highlight;
+        width: calc( 100% / 7 - 12px );
+        height: calc( 100vh / 6 - 16px );
+
+        .inside {
+          font-size: 65px;
+          display: inline-flex;
+          text-align: center;
+          justify-content: center;
+          align-items: end;
+        }
+
+        /*&, &:after {
+          width: calc( 100% / 7 - 12px );
+          font-size: 65px;
+        }
+
+        &:after {
+          width: 100%;
+          height: 100%;
+          content: attr(data-glyph);
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          font-family: $font-stargate;
+          color: $color-highlight;
+          position: absolute;
+          opacity: 1;
+        }*/
+      }
+    }
+
+    .sidebar {
+      width: 20%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 8px 8px 8px; //54,2
+      align-items: flex-end;
+
+      .glyphBox {
+        border: 2px solid darken( $color-primary, 20 );
+        width: calc( 100% - 20px);
+        height: 100%;
+        margin: 1px 0;
+        position: relative;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        color: rgb(120,120,120);
+
+        &:before {
+          content: attr(data-id);
+          display: inline-block;
+          position: absolute;
+          left: 0;
+          margin-left: -21px;
+          font-size: 32px;
+          font-weight: bold;
+          color: inherit;
+        }
+      }
+    }
+
+    .glyph {
+      display: inline-flex;
+      justify-content: space-evenly;
+      align-items: center;
+      font-family: $font-stargate;
+      color: $color-highlight;
+    }
+  }
+}
+
+.cover {
+  z-index: 700;
+  background: rgba( 0, 0, 0, .75 );
+  width: 100%;
+  height: calc( 100% - 10px );
+  top: 5px;
+  left: 0;
+  display: none;
+  opacity: 0;
+
+
+  /*display: flex;
+  flex-direction: column;
+  width: calc( 100vw - 10px );
+  background: black;
+  opacity: 1;*/
+
+  video {
+    position: absolute;
+    left: 5px;
+    top: -10px;
+    z-index: 701;
+    opacity: 0;
+  }
+
+  .top {
+    position: absolute;
+    top: 100px;
+    width: 100vw;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    z-index: 801;
+
+    .circles {
+      padding-left: 6px;
+
+      .circle {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: $color-primary;
+        opacity: 1;
+        margin-left: 3px;
+      }
+    }
+  }
+
+  h1 {
+    font-family: $font-console;
+    color: $color-primary;
+    font-size: 80px;
+    text-align: center;
+    font-weight: normal;
+    text-shadow:
+            0.07em 0 black,
+            0 0.07em black,
+            -0.07em 0 black,
+            0 -0.07em black;
+
+    &.smaller {
+      font-size: 50px;
+    }
+  }
+
+  .status {
+    position: absolute;
+    bottom: 100px;
+    height: 50px;
+    display: flex;
+    width: calc( 100vw - 30px );
+    left: 10px;
+    opacity: 0;
+    justify-content: center;
+    z-index: 801;
+
+    .statusBox {
+      opacity: 0;
+      display: inline-flex;
+      height: 50px;
+      width: 100%;
+      justify-content: center;
+      font-family: $font-console;
+      color: $color-primary;
+      font-size: 30px;
+      text-align: center;
+      text-transform: lowercase;
+      text-shadow:
+              0.07em 0 black,
+              0 0.07em black,
+              -0.07em 0 black,
+              0 -0.07em black;
+    }
+  }
+}

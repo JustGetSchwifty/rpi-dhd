@@ -1,0 +1,41 @@
+// Colors
+$color-primary: #02C4D0;
+$color-secondary: #222222; //#17161B;
+$color-highlight: #DCDCDC;
+$color-grey: #777777;
+
+// Text and fonts
+$sans-stack: 'Open Sans', sans-serif;
+$serif-stack: 'Roboto Slab', serif;
+
+$sans-menu-stack: $serif-stack;
+$bold: 600;
+$normal: 400;
+
+@font-face {
+  font-family: 'Stargate SG-1 Address Glyphs';
+  src: url('../../css/Stargate-sg1_address_glyphs.woff2') format('woff2'),
+  url('../../css/Stargate-sg1_address_glyphs.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Stargate SG1 Go ald';
+  src: url('../../css/Stargate-SG1Goald.woff2') format('woff2'),
+  url('../../css/Stargate-SG1Goald.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'VT323';
+  src: url('../../css/VT323-Regular.woff2') format('woff2'),
+  url('../../css/VT323-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$font-stargate: 'Stargate SG-1 Address Glyphs';
+$font-goauld: 'Stargate SG1 Go ald';
+$font-console: 'VT323';
