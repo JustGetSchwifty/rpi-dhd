@@ -19,3 +19,6 @@ You need to have `exec()` function in PHP enabled for full functionality. Projec
  
  
  This project comes with absolutely no warranties and will probably never be updated. This is a czech scout project for Stargate themed summer camp. 
+ 
+ https://youtu.be/HbhX_xF2MLQ - demonstration of DHD interface
+ https://youtu.be/yN4xiiyrT70 - demonstration of GPIO interface on "work bench"
