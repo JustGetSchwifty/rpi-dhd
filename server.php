@@ -166,7 +166,7 @@
             }
             exec( implode( $exec, " && " ) );
             $prev = $lighThis;
-            usleep( 200000 );
+            usleep( 150000 );
          }
          $exec = "gpio write {$namedPins[$prev]} 0";
          exec( $exec );
