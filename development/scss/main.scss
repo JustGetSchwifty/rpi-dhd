@@ -18,6 +18,23 @@ body {
   cursor: none;
 }
 
+.resetButton {
+  position: absolute;
+  z-index: 1500;
+  width: 93px;
+  height: 35px;
+  bottom: 12px;
+  left: 12px;
+  background: #423a3a;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #d6c8c8;
+}
+
 .adminState {
   position: absolute;
   z-index: 1500;

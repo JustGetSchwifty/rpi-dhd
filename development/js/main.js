@@ -6,18 +6,29 @@ window.activatedGlyphs = [];
 window.dialingTest = [ true, true, true, true, true, true, true ];
 window.checkingNow = 0;
 window.scale = 1;
-window.dialingTimePerGlyph = 7;
+window.dialingTimePerGlyph = 8.25;
 window.whereIsSuccess = 7;
 window.planetName = "planetu";
 window.adminClicks = 0;
 window.timeout = null;
 window.timeoutReset = null;
+window.audio_dial = new Audio('media/Gate-Dial.mp3');
+window.audio_open = new Audio('media/Gate-Open.mp3');
+window.audio_close = new Audio('media/Gate-Close.mp3');
+window.audio_fail = new Audio('media/Gate-Fail.mp3');
+window.resetButton = document.querySelector( ".resetButton" );
 
 var cover = document.querySelector( ".cover" );
 
 var xhttp4 = new XMLHttpRequest();
 xhttp4.open("GET", "server.php?reset=semiSoft", true);
 xhttp4.send();
+
+function reload( ) {
+   location.reload();
+}
+
+window.resetButton.addEventListener( "click", reload );
 
 
 document.querySelector( ".sidebar" ).addEventListener( "dblclick", function() {
@@ -119,7 +130,6 @@ for( var o = 0; o < 2; o++ ) {
                                  var xhttp = new XMLHttpRequest();
                                  xhttp.onreadystatechange = function() {
                                     if (this.readyState == 4 && this.status == 200) {
-                                       console.log( "Dialing responded: ", xhttp.responseText );
                                        var response = JSON.parse( xhttp.responseText ).response;
                                        window.whereIsSuccess = response.whereIsSuccess;
                                        window.dialingTest = response.dialingTest;
@@ -128,13 +138,29 @@ for( var o = 0; o < 2; o++ ) {
                                           if( window.dialingTest[i] === false ) {
                                              window.whereIsSuccess = i + 1;
                                              break;
-                                          }
+                                          } 
                                        }
+
+                                       TweenMax.to( window.resetButton, 1, { opacity: .5 } );
 
                                        for( var i = 0; i < window.whereIsSuccess; i++ ) {
                                           var statusBox = document.querySelector( '.statusBox.status_' + i );
-                                          TweenMax.to( statusBox, .5 * window.scale, { opacity: 1, delay: window.scale * ( ( i * window.dialingTimePerGlyph + ( i == 0 ? 1 * window.scale : 0 ) ) ), onComplete: function( ) {
 
+                                          TweenMax.to( statusBox, .5 * window.scale, { opacity: 1, delay: window.scale * ( i * window.dialingTimePerGlyph ), onComplete: function( ) {
+
+                                                if( window.scale >= 1 ) {
+                                                   window.audio_dial.currentTime = 0;
+                                                   window.audio_dial.play();
+
+                                                   if( window.dialingTest[window.checkingNow] !== true ) {
+                                                      setTimeout( function() {
+                                                         window.audio_dial.pause();
+                                                         window.audio_dial.currentTime = 0;
+                                                         window.audio_fail.currentTime = 0;
+                                                         window.audio_fail.play();
+                                                      }, 5650 );
+                                                   }
+                                                }
 
                                                 TweenMax.to( this.target, .25, { color: 'white', onComplete: function( ) {
                                                    } } ).yoyo(true).repeat( ( window.dialingTimePerGlyph - 2 ) * ( 1 / .25 ) );
@@ -148,9 +174,15 @@ for( var o = 0; o < 2; o++ ) {
 
                                                 setTimeout( function( ) {
 
-                                                   var xhttp3 = new XMLHttpRequest();
-                                                   xhttp3.open("GET", "server.php?dialedNow=" + window.checkingNow, true);
-                                                   xhttp3.send();
+                                                   if( window.dialingTest[window.checkingNow] === true ) {
+                                                      var xhttp3 = new XMLHttpRequest();
+                                                      xhttp3.open( "GET", "server.php?dialedNow=" + window.checkingNow, true );
+                                                      xhttp3.send();
+                                                   } else {
+                                                      var xhttp3 = new XMLHttpRequest();
+                                                      xhttp3.open( "GET", "server.php?dialedNowWithError=" + window.checkingNow, true );
+                                                      xhttp3.send();
+                                                   }
 
                                                    TweenMax.to( target, .01, { color: 'white', onComplete: function( ) {
                                                          target.innerHTML = ( window.dialingTest[window.checkingNow] ? "symbol zapadl" : "symbol nezapadl" );
@@ -166,16 +198,33 @@ for( var o = 0; o < 2; o++ ) {
                                                          }
 
                                                          if( window.checkingNow == 6 && window.dialingTest[window.checkingNow] === true ) {
-                                                            var xhttp5 = new XMLHttpRequest();
-                                                            xhttp5.open("GET", "server.php?success", true);
-                                                            xhttp5.send();
-                                                            document.querySelector( ".cover .top h1" ).innerHTML = "Spojení na " + window.planetName + " navázáno!";
-                                                            TweenMax.to( document.querySelectorAll('.circle'), .05, { display: 'none' } );
-                                                            document.querySelector( ".cover .top h1" ).classList.add( "smaller" );
-                                                            TweenMax.to( document.querySelector( ".cover .top h1" ), .5, { color: '#06FF20' } );
-                                                            TweenMax.to( ".dialer", .25, { borderColor: '#06FF20', ease:Power0.easeInOut } );
-                                                            TweenMax.to( "video", .15, { opacity: 0, ease:Power0.easeInOut } );
-                                                            setTimeout( "reset(false)", 30000 * window.scale );
+
+
+
+                                                            setTimeout( function( ) {
+
+                                                               if( window.scale >= 1 ) {
+                                                                  window.audio_open.currentTime = 0;
+                                                                  window.audio_open.play();
+                                                               }
+
+                                                               var xhttp5 = new XMLHttpRequest();
+                                                               xhttp5.open("GET", "server.php?success", true);
+                                                               xhttp5.send();
+                                                               document.querySelector( ".cover .top h1" ).innerHTML = "Spojení na " + window.planetName + " navázáno!";
+                                                               TweenMax.to( document.querySelectorAll('.circle'), .05, { display: 'none' } );
+                                                               document.querySelector( ".cover .top h1" ).classList.add( "smaller" );
+                                                               TweenMax.to( document.querySelector( ".cover .top h1" ), .5, { color: '#06FF20' } );
+                                                               TweenMax.to( ".dialer", .25, { borderColor: '#06FF20', ease:Power0.easeInOut } );
+                                                               TweenMax.to( "video", .15, { opacity: 0, ease:Power0.easeInOut } );
+                                                               window.resetButton.innerHTML = "ZAVŘÍT BRÁNU";
+                                                               TweenMax.to( window.resetButton, .5, { opacity: 1, width: 400, left: 200, bottom: 20, height: 50, color: 'black', fontSize: 25, backgroundColor: '#06FF20' } );
+                                                               window.resetButton.removeEventListener( "click", reload );
+                                                               window.resetButton.addEventListener( "click", function( ) {
+                                                                  reset( false );
+                                                               });
+                                                            }, 2000 * window.scale );
+
                                                          } else if( window.checkingNow == window.whereIsSuccess - 1 && window.dialingTest[window.checkingNow] === false ) {
                                                             window.checkingNow++;
                                                             setTimeout( "reset(true)", 5000 * window.scale );
@@ -211,19 +260,22 @@ for( var o = 0; o < 2; o++ ) {
 
 function reset( quick ) {
    if( quick === true ) {
-      window.scale = .2;
+      window.scale = .4;
+   } else {
+      window.audio_close.currentTime = 0;
+      window.audio_close.play();
    }
 
-
    var xhttp4 = new XMLHttpRequest();
-   xhttp4.open("GET", "server.php?reset=" + ( quick ? "hard" : "soft" ), false);
+   xhttp4.open("GET", "server.php?reset=" + ( quick ? "hard" : "soft" ), true);
    xhttp4.send();
 
-   TweenMax.to( cover.querySelectorAll( ".top, .status" ), 5 * window.scale, { opacity: 0 } );
-   TweenMax.to( document.querySelectorAll( ".glyph" ), 5 * window.scale, { opacity: 0, onComplete: function( ) {
+   TweenMax.to( window.resetButton, 1, { opacity: 0 } );
+   TweenMax.to( document.querySelectorAll( ".top, .status, .dynamic .glyph.activated .inside" ), 3.5 * window.scale, { opacity: 0, onComplete: function() {
 
-      location.reload();
-   } } );
+         reload( );
+
+      } } );
 
 
 }

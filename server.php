@@ -166,7 +166,7 @@
             }
             exec( implode( $exec, " && " ) );
             $prev = $lighThis;
-            usleep( 150000 );
+            usleep( 155000 );
          }
          $exec = "gpio write {$namedPins[$prev]} 0";
          exec( $exec );
@@ -181,6 +181,23 @@
       exec( $exec );
       $_SESSION["alreadyLitUp"][] = $lightUpChevron;
 
+
+   } elseif( isset( $_GET["dialedNowWithError"] )) {
+
+      $dialed = intval( $_GET["dialedNowWithError"] );
+      $lightUpChevron = ( 7 - $dialed );
+      $lightUpChevronPin = $namedPins[$lightUpChevron];
+
+      $state = 0;
+
+      for( $i = 0; $i <= 20; $i++ ) {
+         $state = abs( $state - 1 );
+         $exec = "gpio write {$lightUpChevronPin} {$state}";
+         usleep( 245000 );
+         exec( $exec );
+      }
+      $exec = "gpio write {$lightUpChevronPin} 0";
+      exec( $exec );
 
    } elseif( isset( $_GET["success"] )) {
 
@@ -210,10 +227,10 @@
             $turnThisOffPin = $namedPins[$turnThisOff];
             $exec = "gpio write {$turnThisOffPin} 0";
             exec( $exec );
-            usleep( ( $type == "soft" ? 250000 : 100000 ) );
+            usleep( ( $type == "soft" ? 150000 : 75000 ) );
          }
 
-      } 
+      }
 
 
    } else {
