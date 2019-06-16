@@ -176,7 +176,16 @@
 
       $dialed = intval( $_GET["dialedNow"] );
       $lightUpChevron = ( 7 - $dialed );
-      $lightUpChevronPin = $namedPins[$lightUpChevron];
+      $lightUpChevronPin = $namedPins[( isset( $_GET["test"] ) ? 1 : $lightUpChevron)];
+
+      $state = 0;
+      for( $i = 0; $i <= 39; $i++ ) {
+         $state = abs( $state - 1 );
+         $exec = "gpio write {$lightUpChevronPin} {$state}";
+         usleep( 2500 + ( $i * 800 ) );
+         exec( $exec );
+      }
+
       $exec = "gpio write {$lightUpChevronPin} 1";
       exec( $exec );
       $_SESSION["alreadyLitUp"][] = $lightUpChevron;
@@ -186,14 +195,14 @@
 
       $dialed = intval( $_GET["dialedNowWithError"] );
       $lightUpChevron = ( 7 - $dialed );
-      $lightUpChevronPin = $namedPins[$lightUpChevron];
+      $lightUpChevronPin = $namedPins[( isset( $_GET["test"] ) ? 1 : $lightUpChevron)];
 
       $state = 0;
 
-      for( $i = 0; $i <= 20; $i++ ) {
+      for( $i = 0; $i <= 79; $i++ ) {
          $state = abs( $state - 1 );
          $exec = "gpio write {$lightUpChevronPin} {$state}";
-         usleep( 245000 );
+         usleep( 65000 );
          exec( $exec );
       }
       $exec = "gpio write {$lightUpChevronPin} 0";

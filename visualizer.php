@@ -135,6 +135,20 @@
          transform: translateY( 29vh ) translateX( 26vh );
       }
 
+      .simulations {
+         position: absolute;
+         display: flex;
+         flex-direction: column;
+         top: 20%;
+         left: 22%;
+      }
+
+      .simulations a {
+         display: block;
+         text-align: center;
+         margin: 4px;
+      }
+
       .blocker {
          width: 200px;
          height: 50px;
@@ -174,7 +188,71 @@
    <a href="?pin=22" class="stripe stripe_14 pin_22<?php echo ( intval( exec( "gpio read 22" ) ) == 1 ? " on" : " off" ) ?>">14</a>
    <a href="?pin=21" class="stripe stripe_15 pin_21<?php echo ( intval( exec( "gpio read 21" ) ) == 1 ? " on" : " off" ) ?>">15</a>
    <a class="blocker"></a>
+   <div class="simulations">
+      <a href="#" onclick="dialing();return false;">Dialing simulation</a>
+      <a href="#" onclick="opened();return false;">Opened simulation</a>
+      <a href="#" onclick="resetHard();return false;">Reset hard simulation</a>
+      <a href="#" onclick="resetSoft();return false;">Reset soft simulation</a>
+      <a href="#" onclick="resetSemiSoft();return false;">Reset semi-soft simulation</a>
+      <a href="#" onclick="dialed();return false;">Dial 1 simulation</a>
+      <a href="#" onclick="dialError();return false;">Dial 1 error simulation</a>
+   </div>
 </div>
+
+<script type="text/javascript">
+   window.audio_dial = new Audio('media/Gate-Dial.mp3');
+   window.audio_open = new Audio('media/Gate-Open.mp3');
+   window.audio_close = new Audio('media/Gate-Close.mp3');
+   window.audio_fail = new Audio('media/Gate-Fail.mp3');
+
+   function dialing() {
+      window.audio_dial.currentTime = 0;
+      window.audio_dial.play();
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "server.php?dialingNow", true);
+      xhttp.send();
+      setTimeout( function() {
+         xhttp.open("GET", "server.php?dialedNow&test", true);
+         xhttp.send();
+      }, 6500 );
+   }
+   function opened() {
+      window.audio_open.currentTime = 0;
+      window.audio_open.play();
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "server.php?success", true);
+      xhttp.send();
+   }
+   function resetHard() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "server.php?reset=hard", true);
+      xhttp.send();
+   }
+   function resetSoft() {
+      window.audio_close.currentTime = 0;
+      window.audio_close.play();
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "server.php?reset=soft", true);
+      xhttp.send();
+   }
+   function resetSemiSoft() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "server.php?reset=semisoft", true);
+      xhttp.send();
+   }
+   function dialError() {
+      window.audio_fail.currentTime = 0;
+      window.audio_fail.play();
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "server.php?dialedNowWithError&test", true);
+      xhttp.send();
+   }
+   function dialed() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "server.php?dialedNow&test", true);
+      xhttp.send();
+   }
+</script>
 
 <?php if( isset( $_GET["visualize"] ) ) { ?>
    <a href="?" class="heartbeat">Stop visualization...</a>
